@@ -1,26 +1,56 @@
-from Bio import SeqIO
-from Bio.Seq import Seq
-from Bio.SeqRecord import SeqRecord
+"""
+Extract protein accession to organism mapping from UniProt FASTA.
+
+This script reads a gzipped UniProt FASTA file and extracts organism (OX)
+information for proteins of interest.
+"""
 import gzip
+from Bio import SeqIO
 
-# read uniq_protein_alignments.txt into a variable called interest_acc
-acc_file = open("uniq_protein_alignments.txt", "r")
-interest_acc = acc_file.read().splitlines()
-acc_file.close()
-# print(interest_acc)
 
-f_out = open("protein-accession-ox-mapping.txt", "w")
+def extract_protein_ox_mapping(uniprot_fasta, accessions_file, output_file):
+    """
+    Extract organism (OX) mapping for proteins of interest.
 
-with gzip.open("/Users/abhinavmeduri/Downloads/uniprot_trembl.fasta.gz", "rt", encoding="ISO-8859-1") as handle:
-    for record in SeqIO.parse(handle, "fasta"):
-        acc = record.id.split('|')[1]
-        if acc in interest_acc:
-            attrs = record.description.split(" ")  # split description into string array
-            print(record.description)
-            attr_arr = [x for x in attrs if x.startswith("OX=")]
-            assert len(attr_arr) == 1
-            ox_attr_val = attr_arr[0][3:].strip()
-            print("%s, %s" % (acc, ox_attr_val))
-            f_out.write("%s, %s\n" % (acc, ox_attr_val))
+    Args:
+        uniprot_fasta: Path to gzipped UniProt FASTA file
+        accessions_file: File containing protein accessions of interest
+        output_file: Output file for accession-OX mappings
+    """
+    # Load accessions of interest
+    with open(accessions_file, "r") as acc_file:
+        interest_acc = set(acc_file.read().splitlines())
+    print(f"Loaded {len(interest_acc)} protein accessions of interest")
 
-f_out.close()
+    count = 0
+    with gzip.open(uniprot_fasta, "rt", encoding="ISO-8859-1") as handle, \
+            open(output_file, "w") as f_out:
+
+        for record in SeqIO.parse(handle, "fasta"):
+            # Extract accession from ID
+            acc = record.id.split('|')[1]
+
+            if acc in interest_acc:
+                # Parse description to find OX attribute
+                attrs = record.description.split(" ")
+                ox_attrs = [x for x in attrs if x.startswith("OX=")]
+
+                if len(ox_attrs) == 1:
+                    ox_attr_val = ox_attrs[0][3:].strip()
+                    print(f"{acc}, {ox_attr_val}")
+                    f_out.write(f"{acc}, {ox_attr_val}\n")
+                    count += 1
+                else:
+                    print(f"Warning: Found {len(ox_attrs)} OX attributes for {acc}")
+                    print(record.description)
+
+    print(f"Extracted {count} protein-OX mappings")
+
+
+if __name__ == '__main__':
+    # Note: Update these paths as needed
+    uniprot_fasta = "/Users/abhinavmeduri/Downloads/uniprot_trembl.fasta.gz"
+    accessions_file = "uniq_protein_alignments.txt"
+    output_file = "protein-accession-ox-mapping.txt"
+
+    extract_protein_ox_mapping(uniprot_fasta, accessions_file, output_file)

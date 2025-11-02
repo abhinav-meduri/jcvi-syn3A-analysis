@@ -1,1 +1,109 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+.venv/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+*.ipynb_checkpoints/
+
+# PyCharm
 .idea/
+
+# VSCode
+.vscode/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Data files (bioinformatics specific)
+*.gz
+*.fasta.gz
+*.fastq.gz
+*.bam
+*.sam
+*.bed
+*.vcf
+*.gff
+*.gtf
+
+# Large database files
+*.db
+*.sqlite
+*.sql
+
+# PFAM and protein databases
+Pfam-*.gz
+uniprot_*.gz
+*.full.uniprot.gz
+
+# Results and temporary files
+*.tmp
+*.temp
+*.log
+*.out
+*.err
+
+# Generated output directories
+generated/
+output/
+results/
+temp/
+
+# CSV files that are outputs (keep input CSVs)
+big_table.csv
+*_output.csv
+*_results.csv
+
+# Alignment files
+*.aln
+*.faln
+*.sto
+
+# PyMOL session files
+*.pse
+
+# Compiled files
+*.pyc
+
+# OS generated files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Backup files
+*~
+*.bak
+*.swp
+*.swo
